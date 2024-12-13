@@ -8,7 +8,7 @@
             	// Diese Zeile nicht löschen.
             	parent::Create();
  	    	$this->RegisterPropertyBoolean("Open", false);
-	
+		$this->RegisterPropertyInteger("ProgramType", 1);
         }
  	
 	public function GetConfigurationForm() 
@@ -20,6 +20,13 @@
 				
 		$arrayElements = array(); 
 		$arrayElements[] = array("name" => "Open", "type" => "CheckBox",  "caption" => "Aktiv"); 
+		$arrayElements[] = array("type" => "Label", "label" => "Wahl des Schaltprogramms:");
+		$arrayOptions = array();
+		$arrayOptions[] = array("label" => "Timer", "value" => 1);
+		$arrayOptions[] = array("label" => "Zeitgesteuert", "value" => 2);
+		$arrayOptions[] = array("label" => "Abhängig", "value" => 3);
+		
+		$arrayElements[] = array("type" => "Select", "name" => "ProgramType", "caption" => "Programm Typ", "options" => $arrayOptions );
  		
 		$arrayActions = array();
 		$arrayActions[] = array("type" => "Label", "label" => "Test Center"); 
