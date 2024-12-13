@@ -10,6 +10,9 @@
  	    	$this->RegisterPropertyBoolean("Open", false);
 		$this->RegisterPropertyInteger("ProgramType", 1);
 		$this->RegisterPropertyInteger("VariableID", 1);
+
+		$this->RegisterPropertyInteger("AutoSwitchOff", 0);
+		$this->RegisterTimer("AutoSwitchOff", 0, 'I2LTaster_AutoSwitchOff($_IPS["TARGET"]);');
         }
  	
 	public function GetConfigurationForm() 
@@ -31,6 +34,10 @@
 		$arrayOptions[] = array("label" => "Timer", "value" => 4);
 		
 		$arrayElements[] = array("type" => "Select", "name" => "ProgramType", "caption" => "Programm Typ", "options" => $arrayOptions );
+
+		$arrayElements[] = array("type" => "Label", "caption" => "_____________________________________________________________________________________________________");
+		$arrayElements[] = array("type" => "Label", "caption" => "Automatische Ausschaltfunktion"); 
+		$arrayElements[] = array("type" => "NumberSpinner", "name" => "AutoSwitchOff", "caption" => "min", "minumum" => 0);
  		
 		$arrayActions = array();
 		$arrayActions[] = array("type" => "Label", "label" => "Test Center"); 
@@ -97,9 +104,30 @@
 		$this->SendDebug("Switch", "Schalten mit Wert: ".var_export($Value, true), 0);
 		RequestAction($VariableID, $Value);
 		$this->SetValue("ManuellSwitch", $Value);
+
+		// Timer setzen
+		$AutoSwitchOff = $this->ReadPropertyInteger("AutoSwitchOff");
+		$this->SendDebug("Switch", "Ergebnis: ".var_export($Value, true)." AutoSwitchOff: ".$AutoSwitchOff, 0);
+		// AutoSwitch
+		
+		If (($Value == false) AND ($AutoSwitchOff > 0)) {
+			$this->SetTimerInterval("AutoSwitchOff", 0);
+			$this->SendDebug("AutoSwitchOff", "Timer Reset", 0);
+		}
+		elseif (($Value == true) AND ($AutoSwitchOff > 0)) {
+			$this->SetTimerInterval("AutoSwitchOff", $AutoSwitchOff * 1000 * 60);
+			$this->SendDebug("AutoSwitchOff", "Aktiviert", 0);
+		}
 	} 
 	
-
+	public function AutoSwitchOff()
+	{
+		If (($this->ReadPropertyBoolean("Open") == true) AND ($this->HasActiveParent() == true)) {
+			$this->SendDebug("AutoSwitchOff", "Abschaltung durch AutoSwitchOff", 0);
+			$this->Switch(false);
+			$this->SetTimerInterval("AutoSwitchoff", 0);
+		}
+	}
 
 	
 	    
