@@ -21,6 +21,8 @@
 				
 		$arrayElements = array(); 
 		$arrayElements[] = array("name" => "Open", "type" => "CheckBox",  "caption" => "Aktiv"); 
+		$arrayElements[] = array("type" => "Label", "label" => "Variable die den aktuellen geschaltet werden soll");
+		$arrayElements[] = array("type" => "SelectVariable", "name" => "VariableID", "caption" => "Schaltaktor"); 
 		$arrayElements[] = array("type" => "Label", "label" => "Wahl des Schaltprogramms:");
 		$arrayOptions = array();
 		$arrayOptions[] = array("label" => "Manuell", "value" => 1);
