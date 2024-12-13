@@ -122,7 +122,7 @@
 	
 	public function AutoSwitchOff()
 	{
-		If (($this->ReadPropertyBoolean("Open") == true) AND ($this->HasActiveParent() == true)) {
+		If ($this->ReadPropertyBoolean("Open") == true) {
 			$this->SendDebug("AutoSwitchOff", "Abschaltung durch AutoSwitchOff", 0);
 			$this->Switch(false);
 			$this->SetTimerInterval("AutoSwitchoff", 0);
