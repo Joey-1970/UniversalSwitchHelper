@@ -1,0 +1,14 @@
+{
+  "id": "{75A352F0-5503-0B56-6D5C-F5246B265D90}",
+  "name": "UniversalSwitchHelper",
+  "type": 3,
+  "vendor": "JP-IPS-Modules",
+  "aliases":
+  [
+    "UniversalSwitchHelper"
+  ],
+  "parentRequirements": [],
+  "childRequirements": [],
+  "implemented": [],
+  "prefix": "UniversalSwitchHelper"
+}
