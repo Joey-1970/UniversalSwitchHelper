@@ -71,6 +71,7 @@
 		switch($Ident) {
 		case "ManuellSwitch":
 			$this->Switch($Value);
+			
 			break;
 		
 	
@@ -93,8 +94,9 @@
 		else {
 			$VariableID = $this->ReadPropertyInteger("VariableID");
 		}
-		$this->SendDebug("Switch", "Schalten mit Wert: ".$Value, 0);
+		$this->SendDebug("Switch", "Schalten mit Wert: ".var_export($Value, true), 0);
 		RequestAction($VariableID, $Value);
+		$this->SetValue("ManuellSwitch", $Value);
 	} 
 	
 
