@@ -50,7 +50,7 @@
 	
 		// Statusvariablen
 		$this->RegisterVariableBoolean("ManuellSwitch", "Manuell", "~Switch", 10);
-		$this->EnableAction("OperatingMode");
+		$this->EnableAction("ManuellSwitch");
 		
 		If ($this->HasActiveParent() == true) {	
 			If ($this->ReadPropertyBoolean("Open") == true) {
@@ -93,6 +93,7 @@
 		else {
 			$VariableID = $this->ReadPropertyInteger("VariableID");
 		}
+		$this->SendDebug("Switch", "Schalten mit Wert: ".$Value, 0);
 		RequestAction($VariableID, $Value);
 	} 
 	
