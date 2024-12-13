@@ -12,7 +12,7 @@
 		$this->RegisterPropertyInteger("VariableID", 1);
 
 		$this->RegisterPropertyInteger("AutoSwitchOff", 0);
-		$this->RegisterTimer("AutoSwitchOff", 0, 'I2LTaster_AutoSwitchOff($_IPS["TARGET"]);');
+		$this->RegisterTimer("AutoSwitchOff", 0, 'UniversalSwitchHelper_AutoSwitchOff($_IPS["TARGET"]);');
         }
  	
 	public function GetConfigurationForm() 
