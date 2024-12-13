@@ -13,6 +13,9 @@
 
 		$this->RegisterPropertyInteger("AutoSwitchOff", 0);
 		$this->RegisterTimer("AutoSwitchOff", 0, 'UniversalSwitchHelper_AutoSwitchOff($_IPS["TARGET"]);');
+
+		// Anlegen des Wochenplans
+		$this->RegisterEvent("Tagesplan", "UniversalSwitchHelper_Event_".$this->InstanceID, 2, $this->InstanceID, 50);
         }
  	
 	public function GetConfigurationForm() 
@@ -24,7 +27,7 @@
 				
 		$arrayElements = array(); 
 		$arrayElements[] = array("name" => "Open", "type" => "CheckBox",  "caption" => "Aktiv"); 
-		$arrayElements[] = array("type" => "Label", "label" => "Variable die den aktuellen geschaltet werden soll");
+		$arrayElements[] = array("type" => "Label", "label" => "Variable die geschaltet werden soll");
 		$arrayElements[] = array("type" => "SelectVariable", "name" => "VariableID", "caption" => "Schaltaktor"); 
 		$arrayElements[] = array("type" => "Label", "label" => "Wahl des Schaltprogramms:");
 		$arrayOptions = array();
@@ -58,6 +61,14 @@
 		// Statusvariablen
 		$this->RegisterVariableBoolean("ManuellSwitch", "Manuell", "~Switch", 10);
 		$this->EnableAction("ManuellSwitch");
+
+		// Anlegen der Daten für den Wochenplan
+		IPS_SetEventScheduleGroup($this->GetIDForIdent("UniversalSwitchHelper_Event_".$this->InstanceID), 0, 127);
+		
+		//Anlegen von Aktionen 
+		IPS_SetEventScheduleAction($this->GetIDForIdent("UniversalSwitchHelper_Event_".$this->InstanceID), 0, "Aus", 0xFF0000, "UniversalSwitchHelper_Automatic(\$_IPS['TARGET'], false);");
+		IPS_SetEventScheduleAction($this->GetIDForIdent("UniversalSwitchHelper_Event_".$this->InstanceID), 1, "Ein", 0x0000FF, "UniversalSwitchHelper_Automatic(\$_IPS['TARGET'], true);");
+
 		
 		If ($this->HasActiveParent() == true) {	
 			If ($this->ReadPropertyBoolean("Open") == true) {
@@ -129,8 +140,32 @@
 		}
 	}
 
-	
+	public function Automatic(bool $State)
+	{
+		If ($this->ReadPropertyBoolean("Open") == true) {	
+			$this->Switch($State);
+		}
+  	}
 	    
+	private function RegisterEvent($Name, $Ident, $Typ, $Parent, $Position)
+	{
+		$eid = @$this->GetIDForIdent($Ident);
+		if($eid === false) {
+		    	$eid = 0;
+		} elseif(IPS_GetEvent($eid)['EventType'] <> $Typ) {
+		    	IPS_DeleteEvent($eid);
+		    	$eid = 0;
+		}
+		//we need to create one
+		if ($eid == 0) {
+			$EventID = IPS_CreateEvent($Typ);
+		    	IPS_SetParent($EventID, $Parent);
+		    	IPS_SetIdent($EventID, $Ident);
+		    	IPS_SetName($EventID, $Name);
+		    	IPS_SetPosition($EventID, $Position);
+		    	IPS_SetEventActive($EventID, true);  
+		}
+	}      
 
 }
 ?>
