@@ -9,6 +9,7 @@
             	parent::Create();
  	    	$this->RegisterPropertyBoolean("Open", false);
 		$this->RegisterPropertyInteger("ProgramType", 1);
+		$this->RegisterPropertyInteger("VariableID", 1);
         }
  	
 	public function GetConfigurationForm() 
@@ -22,9 +23,10 @@
 		$arrayElements[] = array("name" => "Open", "type" => "CheckBox",  "caption" => "Aktiv"); 
 		$arrayElements[] = array("type" => "Label", "label" => "Wahl des Schaltprogramms:");
 		$arrayOptions = array();
-		$arrayOptions[] = array("label" => "Timer", "value" => 1);
+		$arrayOptions[] = array("label" => "Manuell", "value" => 1);
 		$arrayOptions[] = array("label" => "Zeitgesteuert", "value" => 2);
 		$arrayOptions[] = array("label" => "Abhängig", "value" => 3);
+		$arrayOptions[] = array("label" => "Timer", "value" => 4);
 		
 		$arrayElements[] = array("type" => "Select", "name" => "ProgramType", "caption" => "Programm Typ", "options" => $arrayOptions );
  		
@@ -45,7 +47,8 @@
 		
 	
 		// Statusvariablen
-		
+		$this->RegisterVariableBoolean("ManuellSwitch", "Manuell", "~Switch", 10);
+		$this->EnableAction("OperatingMode");
 		
 		If ($this->HasActiveParent() == true) {	
 			If ($this->ReadPropertyBoolean("Open") == true) {
@@ -64,8 +67,8 @@
 	public function RequestAction($Ident, $Value) 
 	{
 		switch($Ident) {
-		case "VPN_Connect":
-			$this->VPN_Connect();
+		case "ManuellSwitch":
+			$this->Switch($Value);
 			break;
 		
 	
@@ -75,10 +78,21 @@
 	}
 	    
 	// Beginn der Funktionen
-
-	    
-	
-	 
+	public function Switch(Bool $Value)
+	{
+		If ($this->ReadPropertyBoolean("Open") == false) {
+			// Die Instanz ist deaktiviert
+			return;
+		}
+	    	If ($this->ReadPropertyInteger("VariableID") == 0) {
+			// Es ist keine Variablen angegeben
+			return;
+		}
+		else {
+			$VariableID = $this->ReadPropertyInteger("VariableID");
+		}
+		RequestAction($VariableID, $Value);
+	} 
 	
 
 
